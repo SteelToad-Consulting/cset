@@ -94,7 +94,7 @@ namespace CSETWebCore.Api.Controllers
         public IActionResult GetExcelExportAllNCUA(string token)
         {
             _token.SetToken(token);
-            int currentUserId = (int)_token.PayloadInt(Constants.Constants.Token_UserId);
+            int currentUserId = _token.GetUserId();
 
             var stream = _exporter.ExportToExcelAllNCUA(currentUserId);
             stream.Flush();

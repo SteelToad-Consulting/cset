@@ -6,14 +6,18 @@
 //////////////////////////////// 
 using CSETWebCore.DataLayer.Model;
 using CSETWebCore.Interfaces.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Protocols;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -22,6 +26,8 @@ namespace CSETWebCore.Helpers
     public class TokenManager : ITokenManager
     {
         private const string _bearerToken = "Bearer ";
+        private const string _assessmentHeader = "CSET_ASSESSMENT_ID";
+        private const string _aggregationHeader = "CSET_AGGREGATION_ID";
         private JwtSecurityToken token = null;
         private string tokenString = null;
         private IHttpContextAccessor _httpContext;
@@ -79,10 +85,6 @@ namespace CSETWebCore.Helpers
             {
                 return;
             }
-
-            // Convert to token 
-            var handler = new JwtSecurityTokenHandler();
-            token = handler.ReadJwtToken(tokenString);
         }
 
 
@@ -110,6 +112,11 @@ namespace CSETWebCore.Helpers
             bool b = int.TryParse(val, out result);
             if (b) return result;
             return null;
+        }
+
+        public string PayloadString(string claim)
+        {
+            return ReadTokenPayload(token, claim);
         }
 
 
@@ -173,13 +180,30 @@ namespace CSETWebCore.Helpers
             return handler.WriteToken(secToken);
         }
 
+        public bool IsTokenValid(string tokenString)
+        {
+            if (String.IsNullOrWhiteSpace(tokenString))
+            {
+                return false;
+            }
+
+            var handler = new JwtSecurityTokenHandler();
+
+            // Convert to token so that we can read the user to use in the signing key test
+            token = handler.ReadJwtToken(tokenString);
+
+            CreateUserIfNotExists();
+
+            return true;
+        }
+
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="tokenString"></param>
         /// <returns></returns>
-        public bool IsTokenValid(string tokenString)
+        public bool IsTokenValidSelfAuth(string tokenString)
         {
             JwtSecurityToken token = null;
 
@@ -292,7 +316,7 @@ namespace CSETWebCore.Helpers
         /// <param name="assessmentId"></param>
         public void ValidateTokenForAssessment(int assessmentId)
         {
-            if (PayloadInt(Constants.Constants.Token_AssessmentId) != assessmentId)
+            if (GetAssessmentId() != assessmentId)
             {
                 var resp = new HttpResponseMessage(HttpStatusCode.Unauthorized)
                 {
@@ -306,15 +330,44 @@ namespace CSETWebCore.Helpers
 
         public int GetCurrentUserId()
         {
-            return PayloadInt(Constants.Constants.Token_UserId) ?? 0;
+            return GetUserId();
         }
 
 
-        public int GetAssessmentId()
+        public int? GetAssessmentId()
         {
-            return PayloadInt(Constants.Constants.Token_AssessmentId) ?? 0;
+            var header = _httpContext.HttpContext.Request.Headers[_assessmentHeader];
+
+            if (!String.IsNullOrWhiteSpace(header))
+            {
+                int val;
+
+                if (int.TryParse(header, out val))
+                {
+                    return val;
+                }
+            }
+
+            return null;
         }
 
+
+        public int? GetAggregationId()
+        {
+            var header = _httpContext.HttpContext.Request.Headers[_aggregationHeader];
+
+            if (!String.IsNullOrWhiteSpace(header))
+            {
+                int val;
+
+                if (int.TryParse(header, out val))
+                {
+                    return val;
+                }
+            }
+
+            return null;
+        }
 
         public void GenerateSecret()
         {
@@ -382,8 +435,61 @@ namespace CSETWebCore.Helpers
 
         public int GetUserId()
         {
-            int userId = (int)PayloadInt(Constants.Constants.Token_UserId);
-            return userId;
+            var email = PayloadString(Constants.Constants.Token_UserEmail);
+
+            if (String.IsNullOrWhiteSpace(email))
+            {
+                return -1;
+            }
+
+            var user = _context.USERS.Where(u => u.PrimaryEmail == email).FirstOrDefault();
+
+            return user != null ? user.UserId : -1;
+        }
+
+
+        public bool CreateUserIfNotExists()
+        {
+            try
+            {
+                var email = PayloadString(Constants.Constants.Token_UserEmail);
+                var firstName = PayloadString(Constants.Constants.Token_FirstName);
+                var lastName = PayloadString(Constants.Constants.Token_LastName);
+
+                var user = _context.USERS.Where(u => u.PrimaryEmail == email).FirstOrDefault();
+
+                if (user == null)
+                {
+
+                    user = new USERS
+                    {
+                        FirstName = firstName,
+                        LastName = lastName,
+                        PrimaryEmail = email,
+                        Password = Guid.NewGuid().ToString(),
+                        Salt = Guid.NewGuid().ToString(),
+                        IsSuperUser = false,
+                        PasswordResetRequired = false,
+                    };
+
+                    _context.USERS.Add(user);
+                    _context.SaveChanges();
+                }
+                else if (user.FirstName != firstName || user.LastName != lastName)
+                {
+                    user.FirstName = firstName;
+                    user.LastName = lastName;
+                    _context.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception exc)
+            {
+                log4net.LogManager.GetLogger(this.GetType()).Error($"... {exc}");
+
+                return false;
+            }
         }
 
 
@@ -394,8 +500,8 @@ namespace CSETWebCore.Helpers
         /// <returns></returns>
         public int AssessmentForUser()
         {
-            int userId = (int)PayloadInt(Constants.Constants.Token_UserId);
-            int? assessmentId = PayloadInt(Constants.Constants.Token_AssessmentId);
+            int userId = GetUserId();
+            int? assessmentId = GetAssessmentId(); 
 
             return AssessmentForUser(userId, assessmentId);
         }
@@ -404,8 +510,8 @@ namespace CSETWebCore.Helpers
         public int AssessmentForUser(String tokenString)
         {
             SetToken(tokenString);
-            int userId = (int)PayloadInt(Constants.Constants.Token_UserId);
-            int? assessmentId = PayloadInt(Constants.Constants.Token_AssessmentId);
+            int userId = GetUserId();
+            int? assessmentId = GetAssessmentId();
 
             return AssessmentForUser(userId, assessmentId);
         }
@@ -447,7 +553,7 @@ namespace CSETWebCore.Helpers
         public void AuthorizeAdminRole()
         {
             int userId = GetUserId();
-            int? assessmentId = PayloadInt(Constants.Constants.Token_AssessmentId);
+            int? assessmentId = GetAssessmentId();
 
             if (assessmentId == null)
             {
@@ -516,9 +622,9 @@ namespace CSETWebCore.Helpers
         /// <returns></returns>
         public bool IsAuthenticated()
         {
-            int userId = (int)PayloadInt(Constants.Constants.Token_UserId);
+            var userId = PayloadString(Constants.Constants.Token_UserEmail);
 
-            return true;
+            return !String.IsNullOrWhiteSpace(userId);
         }
 
         public int UnixTime()

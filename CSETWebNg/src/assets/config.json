@@ -27,6 +27,7 @@
     "showBuildTime": false,
 
     "installationMode": "",
+    "authMode": "AAD",
 
     "buttonLabelY": "Yes",
     "buttonLabelN": "No",

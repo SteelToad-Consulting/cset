@@ -58,7 +58,7 @@ export class QuestionsComponent implements AfterViewChecked {
 
 
   /**
-   * 
+   *
    */
   constructor(
     public questionsSvc: QuestionsService,
@@ -99,9 +99,9 @@ export class QuestionsComponent implements AfterViewChecked {
   }
 
   updateComponentsOverride() {
-    //divide the component override processing 
+    //divide the component override processing
     //and component questions into two portions
-    //and call and update from here.    
+    //and call and update from here.
 
     //clear out the navigation overrides
     //then call the get overrides questions api
@@ -127,8 +127,8 @@ export class QuestionsComponent implements AfterViewChecked {
   }
 
   /**
-   * 
-   * @param targetID 
+   *
+   * @param targetID
    */
   scroll(targetID: string) {
     const t = document.getElementById(targetID);
@@ -159,6 +159,7 @@ export class QuestionsComponent implements AfterViewChecked {
   }
 
   getQuestionCounts() {
+    console.log('a');
     this.questionsSvc.getQuestionsList().subscribe(
       (data: QuestionResponse) => {
         this.assessSvc.applicationMode = data.applicationMode;
@@ -206,6 +207,7 @@ export class QuestionsComponent implements AfterViewChecked {
    * Retrieves the complete list of questions
    */
   loadQuestions() {
+    console.log('b');
     this.questionsSvc.getQuestionsList().subscribe(
       (response: QuestionResponse) => {
         this.assessSvc.applicationMode = response.applicationMode;
@@ -235,7 +237,7 @@ export class QuestionsComponent implements AfterViewChecked {
   }
 
   /**
-   * 
+   *
    */
   visibleGroupCount() {
     let count = 0;
@@ -273,7 +275,7 @@ export class QuestionsComponent implements AfterViewChecked {
   }
 
   /**
-   * 
+   *
    */
   showFilterDialog() {
     this.filterDialogRef = this.dialog.open(QuestionFiltersComponent);

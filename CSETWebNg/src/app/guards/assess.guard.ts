@@ -39,31 +39,39 @@ export class AssessGuard implements CanActivate, CanActivateChild {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> | Promise<boolean> {
-    if (route.params['id'] && !this.authSvc.userToken()) {
-      this.router.navigate(['/home/login/assessment', route.params['id']]);
-      return false;
-    }
 
-    if (!!route.params['id'] && route.params['id'] !== this.assessSvc.id()) {
-      this.assessSvc.getAssessmentToken(route.params['id']).then(() => {
-        return this.checkToken();
-      });
-    }
+    return true;
 
-    if (this.checkToken()) {
-      return true;
-    }
+    // if (route.params['id'] && !this.authSvc.userToken()) {
+    //   console.log('a');
+    //   this.router.navigate(['/home/login/assessment', route.params['id']]);
+    //   return false;
+    // }
 
-    this.router.navigate(['/home/login/assessment', route.params['id']]);
-    return false;
+    // if (!!route.params['id'] && route.params['id'] !== this.assessSvc.id()) {
+    //   console.log('b');
+    //   this.assessSvc.getAssessmentToken(route.params['id']).then(() => {
+    //     return this.checkToken();
+    //   });
+    // }
+
+    // if (this.checkToken()) {
+    //   console.log('trued');
+    //   return true;
+    // }
+
+    // console.log('c');
+    // this.router.navigate(['/home/login/assessment', route.params['id']]);
+    // return false;
   }
 
   checkToken() {
-    if (this.parser.decodeToken(this.authSvc.userToken()).assess
-      && this.parser.decodeToken(this.authSvc.userToken()).assess === this.assessSvc.id()) {
-        return true;
-    }
-    this.router.navigate(['home']);
-    return false;
+    return true;
+    // if (this.parser.decodeToken(this.authSvc.userToken()).assess
+    //   && this.parser.decodeToken(this.authSvc.userToken()).assess === this.assessSvc.id()) {
+    //     return true;
+    // }
+    // this.router.navigate(['home']);
+    // return false;
   }
 }

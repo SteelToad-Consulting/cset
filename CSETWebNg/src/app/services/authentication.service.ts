@@ -21,10 +21,11 @@
 //  SOFTWARE.
 //
 ////////////////////////////////
-import { map } from 'rxjs/operators';
-import { timer, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { timer, Observable, Subject, of } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { ComponentFactoryResolver, Injectable } from '@angular/core';
+import { ComponentFactoryResolver, Inject, Injectable } from '@angular/core';
+import { filter, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 
@@ -35,6 +36,8 @@ import { CreateUser } from './../models/user.model';
 import { ConfigService } from './config.service';
 import { environment } from '../../environments/environment';
 import { parse } from 'querystring';
+import { MSAL_GUARD_CONFIG, MsalGuardConfiguration, MsalService, MsalBroadcastService } from '@azure/msal-angular';
+import { EventMessage, EventType, InteractionStatus, RedirectRequest } from '@azure/msal-browser';
 
 export interface LoginResponse {
     token: string;
@@ -59,12 +62,22 @@ const headers = {
 export class AuthenticationService {
     isLocal: boolean;
     private initialized = false;
+    private readonly _destroying$ = new Subject<void>();
     private parser = new JwtParser();
 
-    constructor(private http: HttpClient, private router: Router, private configSvc: ConfigService, public dialog: MatDialog) {
+    constructor(private http: HttpClient, private router: Router, private configSvc: ConfigService, public dialog: MatDialog,
+      @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration, private msalService: MsalService, private broadcastService: MsalBroadcastService) {
         if (!this.initialized) {
             this.initialized = true;
 
+            this.broadcastService.msalSubject$
+              .pipe(
+                filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS),
+              )
+              .subscribe((result: EventMessage) => {
+                console.log('auth service notified');
+                this.storeUserDataFromAad(result);
+              });
         }
     }
 
@@ -138,12 +151,24 @@ export class AuthenticationService {
         localStorage.setItem('userId', '' + user.userId);
         localStorage.setItem('email', user.email);
         localStorage.setItem('exportExtension', user.exportExtension);
-        localStorage.setItem('importExtensions', user.importExtensions)
+        localStorage.setItem('importExtensions', user.importExtensions);
         localStorage.setItem('developer', String(false));
 
 
         // schedule the first token refresh event
         this.scheduleTokenRefresh(this.http, user.token);
+    }
+
+    storeUserDataFromAad(loginResponse) {
+
+      var token = this.parser.decodeToken(loginResponse.accessToken);
+
+      localStorage.setItem("userToken", loginResponse.accessToken);
+      localStorage.setItem('firstName', token.given_name);
+      localStorage.setItem('lastName', token.family_name);
+      localStorage.setItem('superUser', String(false));
+      localStorage.setItem('email', token.upn);
+      localStorage.setItem('developer', String(false));
     }
 
     /**
@@ -156,6 +181,7 @@ export class AuthenticationService {
         localStorage.setItem('email', email);
 
         // set the scope (application)
+
         let scope: string;
 
         switch(this.configSvc.installationMode || '') {
@@ -186,11 +212,44 @@ export class AuthenticationService {
                 }));
     }
 
+    validateUserRegistration(token) {
+
+      var body = {
+        userId: 0,
+        primaryEmail: token.upn,
+        saveEmail: token.upn,
+        firstName: token.given_name,
+        lastName: token.family_name
+      }
+
+      this.http.post(this.configSvc.apiUrl + 'contacts/UpdateUser', body)
+        .subscribe(r => {
+          console.log('validate:', r);
+        });
+
+    }
+
+    loginWithAad() {
+      return this.msalService.loginPopup()
+        .pipe(
+          tap(response => {
+            this.storeUserDataFromAad(response);
+          })
+        );
+    }
+
 
     logout() {
         // remove user from session storage to log user out
         localStorage.clear();
         this.router.navigate(['/home/login'], { queryParamsHandling: "preserve" });
+    }
+
+    logoutWithAad() {
+      localStorage.clear();
+      this.msalService.logoutRedirect({
+        postLogoutRedirectUri: 'http://localhost:4200'
+      });
     }
 
 

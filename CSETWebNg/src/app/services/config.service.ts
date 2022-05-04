@@ -56,6 +56,7 @@ export class ConfigService {
   isAPI_together_With_Web = false;
 
   installationMode = '';
+  authMode = '';
 
 
   /**
@@ -100,6 +101,7 @@ export class ConfigService {
           this.config = data;
 
           this.installationMode = (this.config.installationMode?.toUpperCase() || '');
+          this.authMode = (this.config.authMode?.toUpperCase() || '');
 
           this.populateLabelValues();
 

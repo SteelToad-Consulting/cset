@@ -63,7 +63,7 @@ namespace CSETWebCore.Api.Controllers
         [Route("api/aggregation/get")]
         public IActionResult GetAggregation()
         {
-            var aggregationID = _token.PayloadInt("aggreg");
+            var aggregationID = _token.GetAggregationId();
             if (aggregationID == null)
             {
                 return null;
@@ -78,7 +78,7 @@ namespace CSETWebCore.Api.Controllers
         [Route("api/aggregation/update")]
         public IActionResult UpdateAggregation([FromBody] Aggregation aggregation)
         {
-            var aggregationID = _token.PayloadInt("aggreg");
+            var aggregationID = _token.GetAggregationId();
             if (aggregationID == null)
             {
                 return Ok();
@@ -104,7 +104,7 @@ namespace CSETWebCore.Api.Controllers
         [Route("api/aggregation/getassessments")]
         public IActionResult GetAssessmentsForAggregation()
         {
-            var aggregationID = _token.PayloadInt("aggreg");
+            var aggregationID = _token.GetAggregationId();
             if (aggregationID == null)
             {
                 return Ok();
@@ -119,7 +119,7 @@ namespace CSETWebCore.Api.Controllers
         [Route("api/aggregation/saveassessmentselection")]
         public IActionResult SaveAssessmentSelection([FromBody] AssessmentSelection request)
         {
-            var aggregationID = _token.PayloadInt("aggreg");
+            var aggregationID = _token.GetAggregationId();
             if (aggregationID == null)
             {
                 return Ok();
@@ -134,7 +134,7 @@ namespace CSETWebCore.Api.Controllers
         [Route("api/aggregation/saveassessmentalias")]
         public IActionResult SaveAssessmentAlias([FromBody] AliasSaveRequest req)
         {
-            var aggregationID = _token.PayloadInt("aggreg");
+            var aggregationID = _token.GetAggregationId();
             if (aggregationID == null)
             {
                 return Ok();
@@ -151,7 +151,7 @@ namespace CSETWebCore.Api.Controllers
         [Route("api/aggregation/getmissedquestions")]
         public IActionResult GetCommonlyMissedQuestions()
         {
-            var aggregationID = _token.PayloadInt("aggreg");
+            var aggregationID = _token.GetAggregationId();
             if (aggregationID == null)
             {
                 return Ok(new List<MissedQuestion>());

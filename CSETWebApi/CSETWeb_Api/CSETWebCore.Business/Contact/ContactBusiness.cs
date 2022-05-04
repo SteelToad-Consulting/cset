@@ -267,7 +267,7 @@ namespace CSETWebCore.Business.Contact
                         {
                             if (!_userAuthentication.IsLocalInstallation(appCode))
                             {
-                                _notificationBusiness.SendInviteePassword(userDetail.Email, userDetail.FirstName, userDetail.LastName, resp.TemporaryPassword, appCode);
+                              //  _notificationBusiness.SendInviteePassword(userDetail.Email, userDetail.FirstName, userDetail.LastName, resp.TemporaryPassword, appCode);
                             }
                         }
                     }
@@ -289,7 +289,7 @@ namespace CSETWebCore.Business.Contact
             {
                 if (!_userAuthentication.IsLocalInstallation(appCode))
                 {
-                    _notificationBusiness.InviteToAssessment(newContact);
+                   // _notificationBusiness.InviteToAssessment(newContact);
                 }
             }
 
@@ -436,8 +436,8 @@ namespace CSETWebCore.Business.Contact
         /// </summary>
         public void RefreshContactNameFromUserDetails()
         {
-            int? userId = _tokenManager.PayloadInt(Constants.Constants.Token_UserId);
-            int? assessmentId = _tokenManager.PayloadInt(Constants.Constants.Token_AssessmentId);
+            int? userId = _tokenManager.GetUserId();
+            int? assessmentId = _tokenManager.GetAssessmentId();
             if (assessmentId == null || userId == null)
             {
                 // There's no assessment or userid on the token.  Nothing to do.

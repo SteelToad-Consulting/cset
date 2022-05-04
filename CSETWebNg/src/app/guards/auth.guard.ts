@@ -38,12 +38,13 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+      return true;
       //console.log("here is my userid:"+  this.parser.decodeToken(this.authSvc.userToken()).userid);
-      if (this.authSvc.userToken() 
-        && this.parser.decodeToken(this.authSvc.userToken()).userid) 
-      {        
+      if (this.authSvc.userToken()
+        && this.parser.decodeToken(this.authSvc.userToken()).userid)
+      {
         return true;
-      }      
+      }
       this.router.navigate(['/home/login'], {queryParamsHandling: "preserve"});
       return false;
     }

@@ -133,18 +133,17 @@ export class AssessmentService {
   getAssessmentToken(assessId: number) {
     return this.http
       .get(this.apiUrl + 'auth/token?assessmentId=' + assessId)
-      .toPromise()
-      .then((response: { token: string }) => {
-        localStorage.removeItem('userToken');
-        localStorage.setItem('userToken', response.token);
-        if (assessId) {
-          localStorage.removeItem('assessmentId');
-          localStorage.setItem(
-            'assessmentId',
-            assessId ? assessId.toString() : ''
-          );
-        }
-      });
+      .toPromise();
+      // .then(_ => {
+
+      //   if (assessId) {
+      //     localStorage.removeItem('assessmentId');
+      //     localStorage.setItem(
+      //       'assessmentId',
+      //       assessId ? assessId.toString() : ''
+      //     );
+      //   }
+      // });
   }
 
   /**
@@ -339,29 +338,29 @@ export class AssessmentService {
    *
    */
   loadAssessment(id: number) {
-    this.getAssessmentToken(id).then(() => {
 
-      this.getAssessmentDetail().subscribe(data => {
-        this.assessment = data;
+    localStorage.setItem('assessmentId', '' + id);
 
-        // make sure that the acet only switch is turned off when in standard CSET
-        if (this.configSvc.installationMode !== 'ACET') {
-          this.assessment.isAcetOnly = false;
-        }
+    this.getAssessmentDetail().subscribe(data => {
+      this.assessment = data;
 
-        const rpath = localStorage.getItem('returnPath');
-        if (rpath != null) {
-          localStorage.removeItem('returnPath');
-          const returnPath = '/assessment/' + id + '/' + rpath;
-          this.router.navigate([returnPath], { queryParamsHandling: 'preserve' });
+      // make sure that the acet only switch is turned off when in standard CSET
+      if (this.configSvc.installationMode !== 'ACET') {
+        this.assessment.isAcetOnly = false;
+      }
+
+      const rpath = localStorage.getItem('returnPath');
+      if (rpath != null) {
+        localStorage.removeItem('returnPath');
+        const returnPath = '/assessment/' + id + '/' + rpath;
+        this.router.navigate([returnPath], { queryParamsHandling: 'preserve' });
+      } else {
+        if (this.assessment.workflow == 'TSA') {
+          this.router.navigate(['/assessment', id, 'prepare', 'info-tsa']);
         } else {
-          if (this.assessment.workflow == 'TSA') {
-            this.router.navigate(['/assessment', id, 'prepare', 'info-tsa']);
-          } else {
-            this.router.navigate(['/assessment', id]);
-          }
+          this.router.navigate(['/assessment', id]);
         }
-      });
+      }
     });
   }
 

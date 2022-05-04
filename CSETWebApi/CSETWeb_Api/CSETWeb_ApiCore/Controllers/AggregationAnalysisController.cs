@@ -303,7 +303,7 @@ namespace CSETWebCore.Api.Controllers
         [Route("api/aggregation/analysis/standardsanswers")]
         public IActionResult GetStandardsAnswerDistribution()
         {
-            var aggregationID = _tokenManager.PayloadInt("aggreg");
+            var aggregationID = _tokenManager.GetAggregationId();
             if (aggregationID == null)
             {
                 return Ok();
@@ -356,7 +356,7 @@ namespace CSETWebCore.Api.Controllers
         [Route("api/aggregation/analysis/componentsanswers")]
         public IActionResult GetComponentsAnswerDistribution()
         {
-            var aggregationID = _tokenManager.PayloadInt("aggreg");
+            var aggregationID = _tokenManager.GetAggregationId();
             if (aggregationID == null)
             {
                 return Ok();
@@ -504,7 +504,7 @@ namespace CSETWebCore.Api.Controllers
         [Route("api/aggregation/analysis/overallcomparison")]
         public IActionResult GetOverallComparison()
         {
-            var aggregationID = _tokenManager.PayloadInt("aggreg");
+            var aggregationID = _tokenManager.GetAggregationId();
             if (aggregationID == null)
             {
                 return null;
@@ -567,7 +567,7 @@ namespace CSETWebCore.Api.Controllers
         [Route("api/aggregation/analysis/salcomparison")]
         public IActionResult GetSalComparison()
         {
-            var aggregationID = _tokenManager.PayloadInt("aggreg");
+            var aggregationID = _tokenManager.GetAggregationId();
             if (aggregationID == null)
             {
                 return Ok();
@@ -607,7 +607,7 @@ namespace CSETWebCore.Api.Controllers
         [Route("api/aggregation/analysis/getbesttoworst")]
         public IActionResult GetBestToWorst()
         {
-            var aggregationID = _tokenManager.PayloadInt("aggreg");
+            var aggregationID = _tokenManager.GetAggregationId();
             if (aggregationID == null)
             {
                 return Ok();

@@ -305,6 +305,7 @@ import { TutorialCmmcComponent } from './assessment/prepare/maturity/tutorial-cm
 import { TutorialEdmComponent } from './assessment/prepare/maturity/tutorial-edm/tutorial-edm.component';
 import { LoginAcetComponent } from './initial/login-acet/login-acet.component';
 import { LoginCsetComponent } from './initial/login-cset/login-cset.component';
+import { LoginAadComponent } from './initial/login-aad/login-aad.component';
 import { AboutCsetComponent } from './dialogs/about-cset/about-cset.component';
 import { AboutAcetComponent } from './dialogs/about-acet/about-acet.component';
 import { AcetOriginComponent } from './initial/acet-origin/acet-origin.component';
@@ -402,6 +403,15 @@ import { CyoteResultsComponent } from './assessment/results/analysis/cyote-resul
 import { TopMenusComponent } from './layout/top-menus/top-menus.component';
 import { CyoteAnomalyComponent } from './assessment/questions/cyote-questions/cyote-anomaly/cyote-anomaly.component';
 import { LogoForReportsComponent } from './reports/logo-for-reports/logo-for-reports.component';
+
+//=====================================================================
+// Azure AAD Authentication
+import { MsalModule, MsalRedirectComponent, MsalGuard, MsalInterceptor } from '@azure/msal-angular';
+import { PublicClientApplication, InteractionType } from '@azure/msal-browser';
+import { IdsInterceptor } from './helpers/ids.interceptor';
+
+const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
+//=====================================================================
 
 @NgModule({
     imports: [
@@ -502,6 +512,27 @@ import { LogoForReportsComponent } from './reports/logo-for-reports/logo-for-rep
             typingsWorkerUrl: 'assets/workers/typings-worker.js',
             baseUrl: 'assets/monaco'
         }),
+        MsalModule.forRoot(new PublicClientApplication({
+          auth: {
+            clientId: '2029f083-bdbe-40f6-9954-dbfd3f7a12b4', // Application (client) ID from the app registration
+            authority: 'https://login.microsoftonline.com/e8c50350-42ca-4386-8486-9a5ad5f38406', // The Azure cloud instance and the app's sign-in audience (tenant ID, common, organizations, or consumers)
+            redirectUri: 'http://localhost:4200/'// This is your redirect URI
+          },
+          cache: {
+            cacheLocation: 'localStorage',
+            storeAuthStateInCookie: isIE, // Set to true for Internet Explorer 11
+          }
+        }), {
+          interactionType: InteractionType.Popup, // MSAL Guard Configuration
+          authRequest: {
+            scopes: ['api://6150f740-1156-4d01-a911-1a7cc7ea74ec/.default']
+          }
+        }, {
+          interactionType: InteractionType.Popup, // MSAL Interceptor Configuration
+          protectedResourceMap: new Map([
+            ['http://localhost:5000', ['api://6150f740-1156-4d01-a911-1a7cc7ea74ec/.default']]
+          ])
+        })
     ],
     declarations: [
         AppComponent,
@@ -672,6 +703,7 @@ import { LogoForReportsComponent } from './reports/logo-for-reports/logo-for-rep
         TutorialCrrComponent,
         LoginAcetComponent,
         LoginCsetComponent,
+        LoginAadComponent,
         AboutCsetComponent,
         AboutAcetComponent,
         AcetOriginComponent,
@@ -767,7 +799,9 @@ import { LogoForReportsComponent } from './reports/logo-for-reports/logo-for-rep
           useFactory: (configSvc: ConfigService, authSvc: AuthenticationService) => {
             return () => {
               return configSvc.loadConfig().then(() => {
-                return authSvc.checkLocal();
+                return authSvc.loginWithAad().toPromise().then(() => {
+                  return authSvc.checkLocal();
+                })
               });
             };
           },
@@ -776,9 +810,15 @@ import { LogoForReportsComponent } from './reports/logo-for-reports/logo-for-rep
         },
         {
             provide: HTTP_INTERCEPTORS,
-            useClass: JwtInterceptor,
+            useClass: IdsInterceptor,
             multi: true
         },
+        {
+          provide: HTTP_INTERCEPTORS, // Provides as HTTP Interceptor
+          useClass: MsalInterceptor,
+          multi: true
+        },
+        MsalGuard,
         DatePipe,
         AuthGuard,
         AssessGuard,

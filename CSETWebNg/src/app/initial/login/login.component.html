@@ -21,10 +21,12 @@
   SOFTWARE.
 -------------------------->
 
-<app-login-cset *ngIf="(configSvc.installationMode || '') === ''"></app-login-cset>
+<app-login-cset *ngIf="(configSvc.installationMode || '') === '' && configSvc.authMode === ''"></app-login-cset>
 
 <app-login-acet *ngIf="configSvc.installationMode === 'ACET'"></app-login-acet>
 
 <app-login-tsa *ngIf="configSvc.installationMode === 'TSA'"></app-login-tsa>
 
 <app-login-cyote *ngIf="configSvc.installationMode === 'CYOTE'"></app-login-cyote>
+
+<app-login-aad *ngIf="configSvc.authMode === 'AAD'"></app-login-aad>

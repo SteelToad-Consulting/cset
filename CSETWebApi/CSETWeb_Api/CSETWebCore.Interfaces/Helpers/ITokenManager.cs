@@ -24,6 +24,8 @@ namespace CSETWebCore.Interfaces.Helpers
         void GenerateSecret();
         string GetSecret();
         int GetUserId();
+        int? GetAssessmentId();
+        int? GetAggregationId();
         int AssessmentForUser();
         int AssessmentForUser(string tokenString);
         int AssessmentForUser(int userId, int? assessmentId);

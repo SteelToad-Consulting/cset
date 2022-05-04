@@ -60,6 +60,9 @@ using System.Linq;
 using CSETWebCore.Interfaces.Crr;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Identity.Web;
 
 namespace CSETWeb_ApiCore
 {
@@ -87,7 +90,7 @@ namespace CSETWeb_ApiCore
                     });
             });
 
-            services.AddAuthentication(options =>
+            /*services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -101,7 +104,10 @@ namespace CSETWeb_ApiCore
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
-            });
+            });*/
+
+            services.AddMicrosoftIdentityWebApiAuthentication(Configuration, "AzureAd");
+
             services.AddAuthorization();
             services.AddControllers().AddNewtonsoftJson(options =>
                 {

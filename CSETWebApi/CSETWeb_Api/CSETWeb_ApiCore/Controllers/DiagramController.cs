@@ -60,8 +60,8 @@ namespace CSETWebCore.Api.Controllers
         public void SaveDiagram([FromBody] DiagramRequest req)
         {
             // get the assessment ID from the JWT
-            int userId = (int)_token.PayloadInt(Constants.Constants.Token_UserId);
-            int? assessmentId = _token.PayloadInt(Constants.Constants.Token_AssessmentId);
+            int userId = (int)_token.GetUserId();
+            int? assessmentId = _token.GetAssessmentId();
             lock (_object)
             {
                 try
@@ -89,7 +89,7 @@ namespace CSETWebCore.Api.Controllers
         public List<IDiagramAnalysisNodeMessage> PerformAnalysis([FromBody] DiagramRequest req)
         {
             // get the assessment ID from the JWT
-            int? assessmentId = _token.PayloadInt(Constants.Constants.Token_AssessmentId);
+            int? assessmentId = _token.GetAssessmentId();
             return PerformAnalysis(req, assessmentId ?? 0);
 
         }
@@ -135,8 +135,8 @@ namespace CSETWebCore.Api.Controllers
         public DiagramResponse GetDiagram()
         {
             // get the assessment ID from the JWT
-            int userId = (int)_token.PayloadInt(Constants.Constants.Token_UserId);
-            int? assessmentId = _token.PayloadInt(Constants.Constants.Token_AssessmentId);
+            int userId = _token.GetUserId();
+            int? assessmentId = _token.GetAssessmentId();
 
             var response = _diagram.GetDiagram((int)assessmentId);
 
@@ -172,8 +172,8 @@ namespace CSETWebCore.Api.Controllers
         public IActionResult HasDiagram()
         {
             // get the assessment ID from the JWT
-            int userId = (int)_token.PayloadInt(Constants.Constants.Token_UserId);
-            int? assessmentId = _token.PayloadInt(Constants.Constants.Token_AssessmentId);
+            int userId = _token.GetUserId();
+            int? assessmentId = _token.GetAssessmentId();
 
             return Ok(_diagram.HasDiagram((int)assessmentId));
         }
@@ -194,8 +194,8 @@ namespace CSETWebCore.Api.Controllers
                 return string.Empty;//BadRequest("request payload not sent");
             }
 
-            int userId = (int)_token.PayloadInt(Constants.Constants.Token_UserId);
-            int? assessmentId = _token.PayloadInt(Constants.Constants.Token_AssessmentId);
+            int userId = _token.GetUserId();
+            int? assessmentId = _token.GetAssessmentId();
 
             try
             {
@@ -247,7 +247,7 @@ namespace CSETWebCore.Api.Controllers
         public List<mxGraphModelRootObject> GetComponents()
         {
             try
-            {int? assessmentId = _token.PayloadInt(Constants.Constants.Token_AssessmentId);
+            {int? assessmentId = _token.GetAssessmentId();
                 var diagramXml = _diagram.GetDiagramXml((int)assessmentId);
                 var vertices = _diagram.ProcessDiagramVertices(diagramXml, assessmentId ?? 0);
 
@@ -276,7 +276,7 @@ namespace CSETWebCore.Api.Controllers
         {
             try
             {
-                int? assessmentId = _token.PayloadInt(Constants.Constants.Token_AssessmentId);
+                int? assessmentId = _token.GetAssessmentId();
                 var diagramXml = _diagram.GetDiagramXml((int)assessmentId);
                 var vertices = _diagram.ProcessDiagramVertices(diagramXml, assessmentId ?? 0);
                 var zones = _diagram.GetDiagramZones(vertices);
@@ -304,7 +304,7 @@ namespace CSETWebCore.Api.Controllers
         {
             try
             {
-                int? assessmentId = _token.PayloadInt(Constants.Constants.Token_AssessmentId);
+                int? assessmentId = _token.GetAssessmentId();
                 var diagramXml = _diagram.GetDiagramXml((int)assessmentId);
                 var edges = _diagram.ProcessDiagramEdges(diagramXml, assessmentId ?? 0);
                 var links = _diagram.GetDiagramLinks(edges);
@@ -332,7 +332,7 @@ namespace CSETWebCore.Api.Controllers
         {
             try
             {
-                int? assessmentId = _token.PayloadInt(Constants.Constants.Token_AssessmentId);
+                int? assessmentId = _token.GetAssessmentId();
                 var diagramXml = _diagram.GetDiagramXml((int)assessmentId);
                 var vertices = _diagram.ProcessDiagramShapes(diagramXml, assessmentId ?? 0);
                 var shapes = _diagram.GetDiagramShapes(vertices);
@@ -360,7 +360,7 @@ namespace CSETWebCore.Api.Controllers
         {
             try
             {
-                int? assessmentId = _token.PayloadInt(Constants.Constants.Token_AssessmentId);
+                int? assessmentId = _token.GetAssessmentId();
                 var diagramXml = _diagram.GetDiagramXml((int)assessmentId);
                 var vertices = _diagram.ProcessDiagramShapes(diagramXml, assessmentId ?? 0);
                 var texts = _diagram.GetDiagramText(vertices);
@@ -388,7 +388,7 @@ namespace CSETWebCore.Api.Controllers
         [Route("api/diagram/exportExcel")]
         public IActionResult GetExcelExportDiagram()
         {
-            int? assessmentId = _token.PayloadInt(Constants.Constants.Token_AssessmentId);
+            int? assessmentId = _token.GetAssessmentId();
             var stream = new ExcelExporter(_context,_dataHandling, _maturity, _acet, _http).ExportToExcellDiagram(assessmentId ?? 0);
             stream.Flush();
             stream.Seek(0, System.IO.SeekOrigin.Begin);
@@ -404,7 +404,7 @@ namespace CSETWebCore.Api.Controllers
         [HttpGet]
         public IEnumerable<DiagramTemplate> GetTemplates()
         {
-            var userId = _token.PayloadInt(Constants.Constants.Token_UserId);
+            var userId = _token.GetUserId();
 
             var templates = _diagram.GetDiagramTemplates();
             return templates;

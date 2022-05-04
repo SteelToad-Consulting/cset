@@ -43,6 +43,10 @@ import { NgbAccordion } from '@ng-bootstrap/ng-bootstrap';
 import { ExcelExportComponent } from './dialogs/excel-export/excel-export.component';
 import { AggregationService } from './services/aggregation.service';
 import { LocalStoreManager } from './services/storage.service';
+import { MsalBroadcastService } from '@azure/msal-angular';
+import { filter, takeUntil } from 'rxjs/operators';
+import { EventMessage, EventType, InteractionStatus } from '@azure/msal-browser';
+import { Subject } from 'rxjs';
 
 
 declare var $: any;
@@ -59,6 +63,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   docUrl: string;
   dialogRef: MatDialogRef<any>;
   isFooterVisible: boolean = false;
+  private readonly _destroying$ = new Subject<void>();
 
   @ViewChild('acc') accordion: NgbAccordion;
 
