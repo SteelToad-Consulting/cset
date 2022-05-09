@@ -13,13 +13,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
       with:
         ref: azure-auth
 
 
     - name: Set up Node.js version
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: '14.x'
 
@@ -33,5 +34,5 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'st-cset-ui-dev'
-        publish-profile: $
+        publish-profile: ${{ secrets.PUBLISH_PROFILE_CSET_UI }}
         package: ./CSETWebNg/dist
