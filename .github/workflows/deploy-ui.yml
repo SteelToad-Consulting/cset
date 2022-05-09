@@ -13,7 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@azure-auth
+    - uses: actions/checkout@v3
+      with:
+        ref: azure-auth
+
 
     - name: Set up Node.js version
       uses: actions/setup-node@v1
@@ -29,6 +32,6 @@ jobs:
     - name: 'Deploy to Azure Web App'
       uses: azure/webapps-deploy@v2
       with:
-        app-name: 'hello-world-app-to-delete'
+        app-name: 'st-cset-ui-dev'
         publish-profile: $
         package: ./CSETWebNg/dist
