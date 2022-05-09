@@ -232,7 +232,7 @@ export class AuthenticationService {
     loginWithAad() {
       return this.msalService.loginRedirect({
         redirectUri: this.configSvc.redirectUrl,
-        scopes: ['api://6150f740-1156-4d01-a911-1a7cc7ea74ec/.default']
+        scopes: [this.configSvc.loginScope]
       });
         // .pipe(
         //   tap(response => {

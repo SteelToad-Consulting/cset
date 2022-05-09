@@ -29,6 +29,7 @@ export const environment = {
   docUrl: 'https://st-cset-api-dev.azurewebsites.net/Documents',
   reportsUrl: 'https://st-cset-reports-dev.azurewebsites.net',
   redirectUrl: 'https://st-cset-ui-dev.azurewebsites.net',
+  loginScope: 'api://6150f740-1156-4d01-a911-1a7cc7ea74ec/.default',
   appCode: 'CSET',
   version: '11.0.1.3',
   helpContactEmail: '',
