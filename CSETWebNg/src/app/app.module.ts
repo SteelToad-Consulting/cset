@@ -523,12 +523,12 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
             storeAuthStateInCookie: isIE, // Set to true for Internet Explorer 11
           }
         }), {
-          interactionType: InteractionType.Redirect, // MSAL Guard Configuration
+          interactionType: InteractionType.Popup, // MSAL Guard Configuration
           authRequest: {
             scopes: ['api://6150f740-1156-4d01-a911-1a7cc7ea74ec/.default']
           }
         }, {
-          interactionType: InteractionType.Redirect, // MSAL Interceptor Configuration
+          interactionType: InteractionType.Popup, // MSAL Interceptor Configuration
           protectedResourceMap: new Map([
             ['http://localhost:5000', ['api://6150f740-1156-4d01-a911-1a7cc7ea74ec/.default']]
           ])
@@ -801,7 +801,7 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
               return configSvc.loadConfig().then(() => {
                 return authSvc.loginWithAad().toPromise().then(() => {
                   return authSvc.checkLocal();
-                })
+               })
               });
             };
           },
