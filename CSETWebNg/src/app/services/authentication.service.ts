@@ -230,12 +230,15 @@ export class AuthenticationService {
     }
 
     loginWithAad() {
-      return this.msalService.loginPopup();
-        // .pipe(
-        //   tap(response => {
-        //     this.storeUserDataFromAad(response);
-        //   })
-        // );
+      return this.msalService.loginPopup({
+        redirectUri: this.configSvc.redirectUrl,
+        scopes: [this.configSvc.loginScope]
+      })
+      .pipe(
+        tap(response => {
+          this.storeUserDataFromAad(response);
+        })
+      );
     }
 
 
