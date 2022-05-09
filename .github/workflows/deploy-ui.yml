@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-and-deploy:
-    # if: ${{ false }} #temp disabling while working on API
+    if: ${{ false }} #temp disabling while working on API
     runs-on: ubuntu-latest
 
     steps:

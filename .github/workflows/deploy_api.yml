@@ -9,7 +9,7 @@ on:
       - 'azure-auth'
 
 env:
-  API_WEBAPP_NAME: st-cset-api-dev    # set this to your application's name
+  API_WEBAPP_NAME: st-cset-apilx    # set this to your application's name
   REPORTS_WEBAPP_NAME: st-cset-reports-dev    # set this to your application's name
   DOTNET_VERSION: '6.0.202'         # set this to the dot net version to use
 
