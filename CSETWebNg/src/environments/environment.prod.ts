@@ -23,11 +23,12 @@
 ////////////////////////////////
 export const environment = {
   production: true,
-  appUrl: '',
-  apiUrl: '',
+  appUrl: 'https://st-cset-ui-dev.azurewebsites.net',
+  apiUrl: 'https://st-cset-api-dev.azurewebsites.net/api',
   analyticsUrl: '',
-  docUrl: '',  
-  reportsUrl: '',
+  docUrl: 'https://st-cset-api-dev.azurewebsites.net/Documents',
+  reportsUrl: 'https://st-cset-reports-dev.azurewebsites.net',
+  redirectUrl: 'https://st-cset-ui-dev.azurewebsites.net',
   appCode: 'CSET',
   version: '11.0.1.3',
   helpContactEmail: '',

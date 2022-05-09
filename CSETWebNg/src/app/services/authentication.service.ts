@@ -230,12 +230,15 @@ export class AuthenticationService {
     }
 
     loginWithAad() {
-      return this.msalService.loginPopup()
-        .pipe(
-          tap(response => {
-            this.storeUserDataFromAad(response);
-          })
-        );
+      return this.msalService.loginRedirect({
+        redirectUri: this.configSvc.redirectUrl,
+        scopes: ['api://6150f740-1156-4d01-a911-1a7cc7ea74ec/.default']
+      });
+        // .pipe(
+        //   tap(response => {
+        //     this.storeUserDataFromAad(response);
+        //   })
+        // );
     }
 
 
@@ -248,7 +251,7 @@ export class AuthenticationService {
     logoutWithAad() {
       localStorage.clear();
       this.msalService.logoutRedirect({
-        postLogoutRedirectUri: 'http://localhost:4200'
+        postLogoutRedirectUri: this.configSvc.redirectUrl
       });
     }
 

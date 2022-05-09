@@ -34,6 +34,7 @@ export class ConfigService {
   apiUrl: string;
   appUrl: string;
   docUrl: string;
+  redirectUrl: string;
   helpContactEmail: string;
   helpContactPhone: string;
   isRunningInElectron: boolean;
@@ -102,6 +103,7 @@ export class ConfigService {
 
           this.installationMode = (this.config.installationMode?.toUpperCase() || '');
           this.authMode = (this.config.authMode?.toUpperCase() || '');
+          this.redirectUrl = (this.config.redirectUrl || '');
 
           this.populateLabelValues();
 
