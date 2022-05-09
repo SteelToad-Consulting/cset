@@ -44,7 +44,7 @@ jobs:
         run: |
           dotnet clean
           # dotnet build --configuration Release
-          dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/dist/api' 
+          dotnet publish -c Release' 
           
       # Deploy to Azure Web apps
       - name: 'Run Azure webapp deploy action using publish profile credentials'
@@ -52,6 +52,6 @@ jobs:
         with: 
           app-name: ${{ env.API_WEBAPP_NAME }} # Replace with your app name
           publish-profile: ${{ secrets.PUBLISH_PROFILE_CSET_API  }} # Define secret variable in repository settings as per action documentation
-          package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/dist/api'
+          package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/CSETWebApi/CSETWeb_Api/CSETWeb_ApiCore/bin/Release/net6.0'
 
 # For more samples to get started with GitHub Action workflows to deploy to Azure, refer to https://github.com/Azure/actions-workflow-samples
