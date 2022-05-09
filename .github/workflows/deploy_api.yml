@@ -39,11 +39,11 @@ jobs:
           dotnet build --configuration Release
 
       # Run dotnet build Reports
-      - name: dotnet build Reports
-        working-directory: CSETWebApi/CSETWeb_Api/CSETWebCore.Reports
-        run: |
-          dotnet clean
-          dotnet build --configuration Release
+      # - name: dotnet build Reports
+      #   working-directory: CSETWebApi/CSETWeb_Api/CSETWebCore.Reports
+      #   run: |
+      #     dotnet clean
+      #     dotnet build --configuration Release
           
       # Deploy API to Azure Web apps
       - name: 'Deploy API to Azure'
@@ -54,10 +54,10 @@ jobs:
           package: './CSETWebApi/CSETWeb_Api/CSETWeb_ApiCore/bin/Release/net6.0'
 
       # Deploy Reports to Azure Web apps
-      - name: 'Deploy Reports to Azure'
-        uses: azure/webapps-deploy@v2
-        with: 
-          app-name: ${{ env.REPORTS_WEBAPP_NAME }} 
-          publish-profile: ${{ secrets.PUBLISH_PROFILE_CSET_REPORTS  }} 
-          package: './CSETWebApi/CSETWeb_Api/CSETWebCore.Reports/bin/Release/net6.0'
+      # - name: 'Deploy Reports to Azure'
+      #   uses: azure/webapps-deploy@v2
+      #   with: 
+      #     app-name: ${{ env.REPORTS_WEBAPP_NAME }} 
+      #     publish-profile: ${{ secrets.PUBLISH_PROFILE_CSET_REPORTS  }} 
+      #     package: './CSETWebApi/CSETWeb_Api/CSETWebCore.Reports/bin/Release/net6.0'
 
