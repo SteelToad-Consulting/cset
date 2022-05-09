@@ -24,6 +24,7 @@
 export const environment = {
   production: true,
   appUrl: 'https://st-cset-ui-dev.azurewebsites.net',
+  apiBaseUrl: 'https://st-cset-api-dev.azurewebsites.net',
   apiUrl: 'https://st-cset-api-dev.azurewebsites.net/api',
   analyticsUrl: '',
   docUrl: 'https://st-cset-api-dev.azurewebsites.net/Documents',
@@ -33,5 +34,11 @@ export const environment = {
   appCode: 'CSET',
   version: '11.0.1.3',
   helpContactEmail: '',
-  helpContactPhone: ''
+  helpContactPhone: '',
+  azureAD: {
+    clientId: '2029f083-bdbe-40f6-9954-dbfd3f7a12b4',
+    loginAuthority: 'https://login.microsoftonline.com/e8c50350-42ca-4386-8486-9a5ad5f38406',
+    scope: 'api://6150f740-1156-4d01-a911-1a7cc7ea74ec/.default',
+    redirectUrl: 'http://localhost:4200',
+  }
 };

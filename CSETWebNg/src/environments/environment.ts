@@ -30,14 +30,19 @@
 export const environment = {
   production: false,
   appUrl: 'http://localhost:4200/',
-  apiUrl: 'https://localhost:5001/api/',
-  docUrl: 'https://localhost:5001/Documents/',
+  apiBaseUrl: 'http://localhost:5000',
+  apiUrl: 'http://localhost:5000/api/',
+  docUrl: 'http://localhost:5000/Documents/',
   analyticsUrl: "https://cset-analytics.dev.inltesting.xyz/",
   reportsUrl: 'https://localhost:44363/',
-  redirectUrl: 'http://localhost:4200',
-  loginScope: 'api://6150f740-1156-4d01-a911-1a7cc7ea74ec/.default',
   appCode: 'CSET',
   version: '11.0.1.3',
   helpContactEmail: 'cset@dhs.gov',
-  helpContactPhone: ''
+  helpContactPhone: '',
+  azureAD: {
+    clientId: '2029f083-bdbe-40f6-9954-dbfd3f7a12b4',
+    loginAuthority: 'https://login.microsoftonline.com/e8c50350-42ca-4386-8486-9a5ad5f38406',
+    scope: 'api://6150f740-1156-4d01-a911-1a7cc7ea74ec/.default',
+    redirectUrl: 'http://localhost:4200',
+  }
 };

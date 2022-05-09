@@ -409,6 +409,8 @@ import { LogoForReportsComponent } from './reports/logo-for-reports/logo-for-rep
 import { MsalModule, MsalRedirectComponent, MsalGuard, MsalInterceptor } from '@azure/msal-angular';
 import { PublicClientApplication, InteractionType } from '@azure/msal-browser';
 import { IdsInterceptor } from './helpers/ids.interceptor';
+import { environment } from '../environments/environment';
+import { env } from 'process';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 //=====================================================================
@@ -514,9 +516,9 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
         }),
         MsalModule.forRoot(new PublicClientApplication({
           auth: {
-            clientId: '2029f083-bdbe-40f6-9954-dbfd3f7a12b4', // Application (client) ID from the app registration
-            authority: 'https://login.microsoftonline.com/e8c50350-42ca-4386-8486-9a5ad5f38406', // The Azure cloud instance and the app's sign-in audience (tenant ID, common, organizations, or consumers)
-            redirectUri: 'http://localhost:4200/'// This is your redirect URI
+            clientId: environment.azureAD.clientId, // Application (client) ID from the app registration
+            authority: environment.azureAD.loginAuthority, // The Azure cloud instance and the app's sign-in audience (tenant ID, common, organizations, or consumers)
+            redirectUri: environment.azureAD.redirectUrl // 'http://localhost:4200/'// This is your redirect URI
           },
           cache: {
             cacheLocation: 'localStorage',
@@ -525,12 +527,12 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
         }), {
           interactionType: InteractionType.Popup, // MSAL Guard Configuration
           authRequest: {
-            scopes: ['api://6150f740-1156-4d01-a911-1a7cc7ea74ec/.default']
+            scopes: [environment.azureAD.scope]
           }
         }, {
           interactionType: InteractionType.Popup, // MSAL Interceptor Configuration
           protectedResourceMap: new Map([
-            ['http://localhost:5000', ['api://6150f740-1156-4d01-a911-1a7cc7ea74ec/.default']]
+            [environment.apiBaseUrl, [environment.azureAD.scope]]
           ])
         })
     ],
