@@ -98,6 +98,15 @@ export class ConfigService {
           } else {
             this.reportsUrl = data.reportsApi;
           }
+
+          //*****
+          // Use URLs from environment file instead of config file
+          this.appUrl = environment.appUrl;
+          this.apiUrl = environment.apiUrl;
+          this.docUrl = environment.docUrl;
+          this.reportsUrl = environment.reportsUrl;
+          //*****
+
           this.helpContactEmail = data.helpContactEmail;
           this.helpContactPhone = data.helpContactPhone;
           this.config = data;
@@ -111,6 +120,7 @@ export class ConfigService {
 
           this.populateButtonClasses();
 
+          console.dir(this);
           this.initialized = true;
         }).catch(error => console.log('Failed to load config file: ' + (<Error>error).message));
     }
