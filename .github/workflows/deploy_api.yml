@@ -14,7 +14,8 @@ env:
   DOTNET_VERSION: '6.0.202'         # set this to the dot net version to use
 
 jobs:
-  build-and-deploy:
+  build-and-deploy-api:
+    if: ${{ false }} #uncomment this to temporarily disable this job
     runs-on: ubuntu-latest
     environment: dev
     steps:

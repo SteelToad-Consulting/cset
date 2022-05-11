@@ -9,8 +9,8 @@ on:
       - 'azure-auth'
 
 jobs:
-  build-and-deploy:
-    if: ${{ false }} #temp disabling while working on API
+  build-and-deploy-ui:
+    # if: ${{ false }} #temp disabling while working on API
     runs-on: ubuntu-latest
     strategy:
       matrix:
