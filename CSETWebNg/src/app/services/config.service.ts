@@ -120,7 +120,6 @@ export class ConfigService {
 
           this.populateButtonClasses();
 
-          console.dir(this);
           this.initialized = true;
         }).catch(error => console.log('Failed to load config file: ' + (<Error>error).message));
     }
