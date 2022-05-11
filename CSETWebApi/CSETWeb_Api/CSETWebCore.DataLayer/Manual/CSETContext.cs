@@ -39,9 +39,22 @@ namespace CSETWebCore.DataLayer.Model
                 var builder = new ConfigurationBuilder();
                 builder.AddJsonFile("appsettings.json", optional: false);
 
+                var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+                if (String.IsNullOrWhiteSpace(env))
+                {
+                    env = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
+                }
+
+                if (!String.IsNullOrWhiteSpace(env))
+                {
+                    builder.AddJsonFile($"appsettings.{env}.json");
+                }
+
+
                 var configuration = builder.Build();
 
-                if(_connectionString == null)
+                if (_connectionString == null)
                     _connectionString = configuration.GetConnectionString("CSET_DB").ToString();
                 optionsBuilder.UseSqlServer(_connectionString);
             }
