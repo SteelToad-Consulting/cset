@@ -39,6 +39,6 @@ export const environment = {
     clientId: '2029f083-bdbe-40f6-9954-dbfd3f7a12b4',
     loginAuthority: 'https://login.microsoftonline.com/e8c50350-42ca-4386-8486-9a5ad5f38406',
     scope: 'api://6150f740-1156-4d01-a911-1a7cc7ea74ec/.default',
-    redirectUrl: 'http://localhost:4200',
+    redirectUrl: 'https://st-cset-ui-dev.azurewebsites.net',
   }
 };
