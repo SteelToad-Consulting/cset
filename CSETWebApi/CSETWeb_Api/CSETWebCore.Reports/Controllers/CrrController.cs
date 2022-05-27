@@ -211,12 +211,12 @@ namespace CSETWebCore.Reports.Controllers
 
         [HttpGet]
         [Route("reports/crr/crr")]
-        public IActionResult CrrReport(string token, string security)
+        public IActionResult CrrReport(string token, string security, int id)
         {
             if (_token.IsTokenValid(token))
             {
               
-               return View(CrrHtmlInit(token, security));
+               return View(CrrHtmlInit(token, security, id));
             }
 
             return Unauthorized();
@@ -224,11 +224,11 @@ namespace CSETWebCore.Reports.Controllers
 
         [HttpGet]
         [Route("reports/crr/deficiency")]
-        public IActionResult CrrDeficiencyReport(string token, string security)
+        public IActionResult CrrDeficiencyReport(string token, string security, int id)
         {
             if (_token.IsTokenValid(token))
             {
-                return View(CrrHtmlInit(token, security));
+                return View(CrrHtmlInit(token, security, id));
             }
 
             return Unauthorized();
@@ -236,11 +236,11 @@ namespace CSETWebCore.Reports.Controllers
 
         [HttpGet]
         [Route("reports/crr/comments")]
-        public IActionResult CrrCommentsMarked(string token, string security)
+        public IActionResult CrrCommentsMarked(string token, string security, int id)
         {
             if (_token.IsTokenValid(token))
             {
-                return View(CrrHtmlInit(token, security));
+                return View(CrrHtmlInit(token, security, id));
             }
 
             return Unauthorized();
@@ -255,11 +255,11 @@ namespace CSETWebCore.Reports.Controllers
             return Ok(crrModel);
         }
 
-        private object CrrHtmlInit(string token, string security)
+        private object CrrHtmlInit(string token, string security, int assessmentId)
         {
             _token.Init(token);
             Request.Headers.Add("Authorization", token);
-            var assessmentId = _token.AssessmentForUser();
+            // var assessmentId = _token.AssessmentForUser();
             HttpContext.Session.Set("assessmentId", Encoding.ASCII.GetBytes(assessmentId.ToString()));
             HttpContext.Session.Set("security", Encoding.ASCII.GetBytes(security));
             return GetCrrModel(assessmentId);

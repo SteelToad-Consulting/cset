@@ -8,8 +8,6 @@ using Microsoft.Extensions.Hosting;
 using CSETWebCore.Business.ACETDashboard;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using CSETWebCore.Business.AdminTab;
 using CSETWebCore.Business.Aggregation;
 using CSETWebCore.Business.Assessment;
@@ -57,10 +55,8 @@ using CSETWebCore.Interfaces.ResourceLibrary;
 using CSETWebCore.Interfaces.Sal;
 using CSETWebCore.Interfaces.Standards;
 using CSETWebCore.Interfaces.User;
-using CSETWebCore.Reports.Helper;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-
+using Microsoft.Identity.Web;
 
 namespace CSETWebCore.Reports
 {
@@ -69,8 +65,8 @@ namespace CSETWebCore.Reports
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            var key = ReadResource.ReadResourceByKey("secrets.json", "IronPdf");
-            IronPdf.License.LicenseKey = key;
+            // var key = ReadResource.ReadResourceByKey("secrets.json", "IronPdf");
+            // IronPdf.License.LicenseKey = key;
         }
 
         public IConfiguration Configuration { get; }
@@ -89,7 +85,7 @@ namespace CSETWebCore.Reports
                             .AllowAnyHeader();
                     });
             });
-
+     /*
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -105,7 +101,10 @@ namespace CSETWebCore.Reports
                     ValidateAudience = false
                 };
             });
+            */
 
+            services.AddMicrosoftIdentityWebApiAuthentication(Configuration, "AzureAd");
+            
             services.AddSession();
             services.AddAuthorization();
             services.AddControllersWithViews().AddJsonOptions(options =>

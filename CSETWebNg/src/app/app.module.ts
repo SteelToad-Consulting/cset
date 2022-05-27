@@ -532,7 +532,8 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
         }, {
           interactionType: InteractionType.Popup, // MSAL Interceptor Configuration
           protectedResourceMap: new Map([
-            [environment.apiBaseUrl, [environment.azureAD.scope]]
+            [environment.apiBaseUrl, [environment.azureAD.scope]],
+            [environment.reportsUrl, [environment.azureAD.scope]]
           ])
         })
     ],

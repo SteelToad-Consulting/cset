@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <Content Remove="Resources\reports.json" />
-    <Content Remove="Resources\secrets.json" />
+    <!-- <Content Remove="Resources\secrets.json" /> -->
   </ItemGroup>
 
   <ItemGroup>
@@ -24,7 +24,9 @@
   <ItemGroup>
     <PackageReference Include="IronPdf" Version="2021.12.4495" />
     <PackageReference Include="log4net" Version="2.0.14" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="6.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.5" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="1.24.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -1022,9 +1024,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\secrets.json">
+    <!-- <EmbeddedResource Include="Resources\secrets.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </EmbeddedResource> -->
     <None Include="wwwroot\images\TSA\CSET-TSA Logo.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

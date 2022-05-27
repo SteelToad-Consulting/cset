@@ -125,6 +125,7 @@ export class ReportsComponent implements OnInit, AfterViewInit {
         if (this.assessSvc.usesMaturityModel('CRR')) {
             url += "&security=" + this.securitySelected
         }
+        url += "&id=" + this.assessSvc.assessment.id;
         window.open(url, "_blank");
         return;
     }
