@@ -16,7 +16,7 @@ jobs:
             - run:
                 name: Show directory
                 command: pwd
-            -run:
+            - run:
                 name: list directory contents
                 command: ls
             # Restore local dependencies from cache
