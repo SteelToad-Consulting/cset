@@ -8,7 +8,8 @@ jobs:
             - image: cimg/node:14.19.3
         steps:
             # Checkout the code from the branch into the working_directory
-            - checkout
+            - checkout:
+                path: ~/project
             # Log the current branch
             - run:
                 name: Show current branch
