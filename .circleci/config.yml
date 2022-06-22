@@ -2,8 +2,8 @@ version: 2
 
 jobs:
     # The build job
-    build:
-        working_directory: ~/project
+    build-ui:
+        working_directory: ~/project/CSETWebNG
         docker:
             - image: cimg/node:14.19.3
         steps:
@@ -94,7 +94,7 @@ workflows:
     # The build and deploy workflow
     build_and_deploy:
         jobs:
-            - build
+            - build-ui
             # The deploy job will only run on the filtered branches and
             # require the build job to be successful before it starts
             # - deploy:
