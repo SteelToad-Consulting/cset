@@ -3,7 +3,7 @@ version: 2
 jobs:
     # The build job
     build-ui:
-        working_directory: ~/project/CSETWebNG
+        working_directory: ~/project/CSETWebNg
         docker:
             - image: cimg/node:14.19.3
         steps:
